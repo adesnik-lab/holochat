@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 
 from .models import MessageContent, MessageHold, MessageRequest, MessageStore
 
@@ -33,12 +33,14 @@ async def read_most_recent():
     return message_dict
 
 @app.post("/msg/{dest_pc}")
-async def write_message(dest_pc: str, msg: MessageContent):
+async def write_message(dest_pc: str, msg: MessageContent,  request: Request):
     """Write a message to the database."""
+    client_host = request.client.host #type: ignore
     # take the raw message and turn it into a MessageHold (waiting for first GET request)
     new_msg = MessageHold(
         **msg.model_dump(), 
         target=dest_pc,
+        client_host=client_host, #type: ignore
     )
     # message_db is a dict of lists, so we can append the new message to the list
     message_db[dest_pc].messages.append(new_msg)
@@ -47,8 +49,10 @@ async def write_message(dest_pc: str, msg: MessageContent):
 @app.get("/msg/{dest_pc}")
 async def read_message(dest_pc: str) -> MessageRequest:
     """Read a message from the database. This will return the most recent message for a client PC."""
+    
     if dest_pc not in message_db:
         raise HTTPException(status_code=404, detail="Client PC not found in message database.")
+    
     if len(message_db[dest_pc].messages) == 0:
         raise HTTPException(status_code=404, detail="No messages found for this client PC.")
     

@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, IPvAnyAddress
 
 from .settings import load_settings
 
@@ -31,6 +31,7 @@ class MessageHold(BaseModel):
     """The message that is held in the server, until a first GET request is made."""
     message: str
     sender: str
+    client_host: IPvAnyAddress
     target: str
     recv_time: datetime = Field(default_factory=datetime.now)
     message_freshness: MessageStaleness = MessageStaleness.NONE
@@ -40,6 +41,7 @@ class MessageRequest(BaseModel):
     """The message that is returned to the client, after a GET request is made."""
     message: str
     sender: str
+    client_host: IPvAnyAddress
     target: str
     recv_time: datetime
     request_time: datetime = Field(default_factory=datetime.now)
