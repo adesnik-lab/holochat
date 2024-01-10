@@ -5,3 +5,5 @@
 - [ ] Implement a redis database.
 - [ ] Implement a `Dockerfile` for the project.
 - [ ] Better documentation or something for endpoints.
+- [ ] Separate the `app.py` file into multiple files.
+- [ ] Separate message history from current message.
