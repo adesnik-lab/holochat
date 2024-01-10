@@ -14,7 +14,7 @@ message_db: defaultdict[str, MessageStore] = defaultdict(MessageStore)
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to StimSync!"}
+    return {"message": "Welcome to HoloChat!"}
 
 
 ### --- Messages --- ###
@@ -60,7 +60,7 @@ async def read_message(dest_pc: str) -> MessageRequest:
         held_msg.read_count += 1
     
     msg = MessageRequest(
-        **held_msg.model_dump(),
+        **held_msg.model_dump(exclude={"request_time"}),
     )
     message_db[dest_pc].messages[-1] = msg
     

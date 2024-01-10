@@ -9,12 +9,12 @@ client = TestClient(app)
 def test_read_main():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Welcome to StimSync!"}
+    assert response.json() == {"message": "Welcome to HoloChat!"}
     
 def test_post_message():
     response = client.post("/msg/pc", json={"message": "Holography is fun."})
     assert response.status_code == 200
-    assert response.json() == {"message": "Message received.", "target": "pc1"}
+    assert response.json() == {"message": "Message received.", "target": "pc"}
     
 def test_message_freshness():
     response = client.post("/msg/pc", json={"message": "Test freshness"})

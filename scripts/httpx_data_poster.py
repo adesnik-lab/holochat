@@ -33,9 +33,14 @@ httpx.post(
     'http://localhost:8000/msg/ptb', 
     json={"message": "ptb test message."}
 )
-time.sleep(5)
+time.sleep(3)
 httpx.get(
     'http://localhost:8000/msg/ptb'
+)
+
+httpx.post(
+    'http://localhost:8000/msg/holo',
+    json={"message": "holo test message."}
 )
 
 print('POSTs complete.')

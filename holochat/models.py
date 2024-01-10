@@ -42,7 +42,7 @@ class MessageRequest(BaseModel):
     sender: str
     target: str
     recv_time: datetime
-    request_time: datetime = Field(default_factory=datetime.now, exclude=True)
+    request_time: datetime = Field(default_factory=datetime.now)
     read_count: int = 0
     
     @computed_field
