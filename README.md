@@ -1,4 +1,4 @@
-# StimSync Server
+# HoloChat Server
 
 A "modern" stim message server to facilitate communication between rig computers.
 
@@ -31,3 +31,5 @@ pip install -e .
 There's a config file (config.json) that you can edit to change the default settings. They have all the default values filled in, so overwrite what you want to change.
 
 ### Running the server
+
+`python holochat`
