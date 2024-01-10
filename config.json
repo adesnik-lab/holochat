@@ -1,0 +1,9 @@
+{
+    "$schema": "./settings_schema.json",
+    "message_stale_secs": 10,
+    "message_expire_secs": 60,
+    "server": {
+        "port": 8000,
+        "ip": "0.0.0.0"
+    }
+}

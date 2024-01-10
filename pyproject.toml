@@ -1,0 +1,22 @@
+[project]
+name = "holochat"
+version = "0.1.0"
+description = "A tools for facilitating communication between multiple computers during experiments."
+authors = [
+    {name = "Will Hendricks", email = "hendricksw@gmail.com"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+dependencies = [
+    "fastapi",
+    "pydantic",
+    "uvicorn[standard]"
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = [
+    "rich",
+    "httpx",
+    "pytest"
+]
