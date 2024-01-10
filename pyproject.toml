@@ -1,6 +1,6 @@
 [project]
 name = "holochat"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tools for facilitating communication between multiple computers during experiments."
 authors = [
     {name = "Will Hendricks", email = "hendricksw@gmail.com"}
