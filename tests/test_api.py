@@ -30,6 +30,16 @@ def test_message_staleness():
     assert response.status_code == 200
     assert response.json()["message_freshness"] == "stale"
     
+def test_mesage_ages():
+    client.post("/msg/pc", json={"message": "Test age"})
+    time.sleep(1)
+    response = client.get("/msg/pc")
+    t1 = response.json()["message_age_secs"]
+    time.sleep(1)
+    response = client.get("/msg/pc")
+    t2 = response.json()["message_age_secs"]
+    assert t2 > t1
+    
 def test_message_read_increment():
     response = client.post("/msg/pc", json={'message': 'test increment'})
     r1 = client.get("/msg/pc")

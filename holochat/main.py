@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 
 from .models import MessageContent, MessageHold, MessageRequest, MessageStore
 
@@ -33,14 +33,12 @@ async def read_most_recent():
     return message_dict
 
 @app.post("/msg/{dest_pc}")
-async def write_message(dest_pc: str, msg: MessageContent,  request: Request):
+async def write_message(dest_pc: str, msg: MessageContent):
     """Write a message to the database."""
-    client_host = request.client.host #type: ignore
     # take the raw message and turn it into a MessageHold (waiting for first GET request)
     new_msg = MessageHold(
         **msg.model_dump(), 
         target=dest_pc,
-        client_host=client_host, #type: ignore
     )
     # message_db is a dict of lists, so we can append the new message to the list
     message_db[dest_pc].messages.append(new_msg)
