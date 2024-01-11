@@ -8,6 +8,7 @@ from pydantic import BaseModel
 class _ServerSettings(BaseModel):
     port: int = 8000
     ip: str = '0.0.0.0'
+    workers: int = 2
     
 class MainSettings(BaseModel):
     message_stale_secs: int | float = 10

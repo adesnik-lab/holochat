@@ -4,6 +4,7 @@
     "message_expire_secs": 60,
     "server": {
         "port": 8000,
-        "ip": "0.0.0.0"
+        "ip": "0.0.0.0",
+        "workers": 2
     }
 }

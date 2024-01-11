@@ -20,19 +20,19 @@ async def root():
 ### --- Messages --- ###
 
 # these routes must be defined first, before routes with the path parameter
-@app.get("/msg/all")
+@app.get("/msg/all", tags=["messages"])
 async def read_all_messages():
     """Show all messages received by the server."""
     message_dict = {k: v.messages for k,v in message_db.items() if len(v.messages) > 0}
     return message_dict
 
-@app.get("/msg/latest")
+@app.get("/msg/latest", tags=["messages"])
 async def read_most_recent():
     """Show the most recent message for each client."""
     message_dict = {k: v.messages[-1] for k,v in message_db.items() if len(v.messages) > 0}
     return message_dict
 
-@app.post("/msg/{dest_pc}")
+@app.post("/msg/{dest_pc}", tags=["messages"])
 async def write_message(dest_pc: str, msg: MessageContent):
     """Write a message to the database."""
     # take the raw message and turn it into a MessageHold (waiting for first GET request)
@@ -44,7 +44,7 @@ async def write_message(dest_pc: str, msg: MessageContent):
     message_db[dest_pc].messages.append(new_msg)
     return {"message": "Message received.", "target": dest_pc}
 
-@app.get("/msg/{dest_pc}")
+@app.get("/msg/{dest_pc}", tags=["messages"])
 async def read_message(dest_pc: str) -> MessageRequest:
     """Read a message from the database. This will return the most recent message for a client PC."""
     
@@ -66,7 +66,7 @@ async def read_message(dest_pc: str) -> MessageRequest:
     
     return msg
 
-@app.delete("/msg/{dest_pc}")
+@app.delete("/msg/{dest_pc}", tags=["messages"])
 async def delete_pc_messages(dest_pc: str) -> dict[str, str]:
     if dest_pc not in message_db:
         raise HTTPException(status_code=404, detail="Client PC not found in message database.")
@@ -74,7 +74,7 @@ async def delete_pc_messages(dest_pc: str) -> dict[str, str]:
         message_db[dest_pc].messages = []
     return {"message": "Messages deleted.", "target": dest_pc}
 
-@app.delete("/msg")
+@app.delete("/msg", tags=["messages"])
 async def delete_all_messages() -> dict[str, str]:
     for pc in message_db:
         message_db[pc].messages = []
@@ -83,13 +83,13 @@ async def delete_all_messages() -> dict[str, str]:
 
 ### --- Config --- ###
 
-@app.post("/config/{dest_pc}")
+@app.post("/config/{dest_pc}", tags=["config"])
 async def write_config(dest_pc: str, config: dict[str, Any]):
     """Write a config to the database for a specific client."""
     message_db[dest_pc].config = config
     return {"message": "Config received.", "target": dest_pc}
 
-@app.get("/config/{dest_pc}")
+@app.get("/config/{dest_pc}", tags=["config"])
 async def read_config(dest_pc: str) -> dict[str, Any]:
     """Read a config from the database for a specific client."""
     if dest_pc not in message_db:
@@ -98,7 +98,7 @@ async def read_config(dest_pc: str) -> dict[str, Any]:
         raise HTTPException(status_code=404, detail="No config found for this client PC.")
     return message_db[dest_pc].config
 
-@app.delete("/config/{dest_pc}")
+@app.delete("/config/{dest_pc}", tags=["config"])
 async def delete_pc_config(dest_pc: str) -> dict[str, str]:
     if dest_pc not in message_db:
         raise HTTPException(status_code=404, detail="Client PC not found in message database.")
@@ -106,12 +106,12 @@ async def delete_pc_config(dest_pc: str) -> dict[str, str]:
         message_db[dest_pc].config.clear()
     return {"message": "Config deleted.", "target": dest_pc}
 
-@app.get("/config")
+@app.get("/config", tags=["config"])
 async def get_all_configs() -> dict[str, dict[str, Any]]:
     """Get all configs from the database."""
     return {k: v.config for k,v in message_db.items() if len(v.config) > 0}
 
-@app.delete("/config")
+@app.delete("/config", tags=["config"])
 async def delete_all_configs() -> dict[str, str]:
     for pc in message_db:
         message_db[pc].config = {}
@@ -120,19 +120,19 @@ async def delete_all_configs() -> dict[str, str]:
 
 ### --- Database --- ###
 
-@app.get("/db")
+@app.get("/db", tags=["database"])
 async def read_db_all() -> dict[str, MessageStore]:
     """Show the entire database."""
     return message_db
 
-@app.get("/db/{dest_pc}")
+@app.get("/db/{dest_pc}", tags=["database"])
 async def read_pc_db(dest_pc: str) -> MessageStore:
     """Show the database for a specific client."""
     if dest_pc not in message_db:
         raise HTTPException(status_code=404, detail="Client PC not found in message database.")
     return message_db[dest_pc]
 
-@app.delete("/db/{dest_pc}")
+@app.delete("/db/{dest_pc}", tags=["database"])
 async def delete_pc_db(dest_pc: str) -> dict[str, str]:
     """Show the database for a specific client."""
     if dest_pc not in message_db:
@@ -140,7 +140,7 @@ async def delete_pc_db(dest_pc: str) -> dict[str, str]:
     del message_db[dest_pc]
     return {"message": "Database deleted for target client.", "target": dest_pc}
 
-@app.delete("/db")
+@app.delete("/db", tags=["database"])
 async def delete_db() -> dict[str, str]:
     message_db.clear()
     return {"message": "Database deleted."}

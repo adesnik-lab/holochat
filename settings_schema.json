@@ -11,6 +11,11 @@
                     "default": "0.0.0.0",
                     "title": "Ip",
                     "type": "string"
+                },
+                "workers": {
+                    "default": 2,
+                    "title": "Workers",
+                    "type": "integer"
                 }
             },
             "title": "_ServerSettings",
@@ -50,7 +55,8 @@
             ],
             "default": {
                 "port": 8000,
-                "ip": "0.0.0.0"
+                "ip": "0.0.0.0",
+                "workers": 2
             }
         }
     },
