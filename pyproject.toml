@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "holochat"
 version = "0.1.1"
@@ -18,5 +22,11 @@ requires-python = ">=3.10"
 dev = [
     "rich",
     "httpx",
-    "pytest"
+    "pytest",
+    "pyfakefs"
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
 ]

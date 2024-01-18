@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, computed_field
 from .settings import load_settings
 
 
-settings = load_settings('config.json')
+settings = load_settings()
 
 def time_diff_seconds(start: datetime, end: datetime) -> float:
     return (end - start).total_seconds()
