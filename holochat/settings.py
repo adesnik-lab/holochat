@@ -63,7 +63,7 @@ def generate_settings(save_path: str | Path, overwrite: bool = False, with_schem
 def _prepare_save(save_path: str | Path, overwrite: bool):
     save_path = Path(save_path)
     if save_path.exists() and not overwrite:
-        raise FileExistsError(f'File {save_path.as_posix()} already exists.')
+        raise FileExistsError(f'File {save_path.as_posix()} already exists. Use --ow to overwrite.')
     return save_path
 
 def _load_settings_file(config_path: str | Path) -> MainSettings:
@@ -76,29 +76,17 @@ def _load_settings_file(config_path: str | Path) -> MainSettings:
         
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
-    p.add_argument('--schema', action='store_true', help="Generate a JSON schema file.")
-    p.add_argument('--ow', action='store_true', help="Overwrite existing file(s).")
     p.add_argument('--home', action='store_true', help="Also save to user's home directory.")
-    p.add_argument('-a', '--all', action='store_true', help="Generate schema and settings files. Overwrites existing files.")
+    p.add_argument('--ow', action='store_true', help="Overwrite existing file(s).")
     args = p.parse_args()
     
-    save_locs = [REPO_JSON_PATH]
-    if args.home or args.all:
-        save_locs.append(USER_JSON_PATH)
-    
-    if args.schema:
-        print('Generating schema and settings files...')
-        generate_schema(SCHEMA_PATH, overwrite=args.ow)
-        for save_loc in save_locs:
-            generate_settings(save_loc, overwrite=args.ow, with_schema=True)
-    elif args.all:
-        print('Generating schema and settings files...')
-        generate_schema(SCHEMA_PATH, overwrite=True)
-        for save_loc in save_locs:
-            generate_settings(save_loc, overwrite=True, with_schema=True)
+    if args.home:
+        print('Generating settings file at user home...')
+        generate_settings(USER_JSON_PATH, overwrite=args.ow, with_schema=False)
+        
     else:
-        print('Generating settings file...')
-        for save_loc in save_locs:
-            generate_settings(save_loc, overwrite=args.ow, with_schema=False)
+        print('Generating schema and settings file in repo...')
+        generate_schema(SCHEMA_PATH, overwrite=args.ow)
+        generate_settings(REPO_JSON_PATH, overwrite=args.ow, with_schema=True)
     
     print('Done.')

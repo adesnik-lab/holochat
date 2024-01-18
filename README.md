@@ -4,6 +4,19 @@ A "modern" stim message server to facilitate communication between rig computers
 
 ## Installation
 
+### Easy mode install
+
+Just install and call from the commandline without cloning the repo.
+
+```bash
+conda create -n holochat python pip
+conda activate holochat
+pip install git+https://github.com/willyh101/holochat.git
+```
+
+Then you can immediately run the server with `python -m holochat`.
+
+
 ### Install via venv and pip
 
 If you have a python >3.10 on your system, you can install the package directly from github and use venv. I'm assuming you've already cloned the repo.
@@ -11,7 +24,7 @@ If you have a python >3.10 on your system, you can install the package directly 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e .
+pip install -e '.[dev]'
 ```
 
 ### Install via conda
@@ -19,17 +32,23 @@ pip install -e .
 You can also install using conda/mamba to manage python. Just install the most recent python version, whatever version comes up (that's >=3.10).
 
 ```bash
-conda create -n stimsync python pip
-conda activate stimsync
-pip install -e .
+conda create -n holochat python pip
+conda activate holochat
+pip install -e '.[dev]'
 ```
 
 ## Usage
 
-### Config file
+### Settings File
 
-There's a config file (config.json) that you can edit to change the default settings. They have all the default values filled in, so overwrite what you want to change.
+The settings file is a json file that contains generic settings for the server.
+
+Settings can live in either the project directory or in the user's home directory. The settings file in the user's home directory will take precedence over the one in the repo directory.
+
+In order to generate the settings file, run `python -m holochat.settings`. This generates the settings file in the repo. If you want it in your home directory, use `python -m holochat.settings --home`.
 
 ### Running the server
 
-`python holochat`
+`python -m holochat`, the server will load the settings file automatically and run.
+
+API documentation is available at `http://[your-local-ip]:8000/docs`.
