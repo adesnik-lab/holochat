@@ -1,4 +1,4 @@
-<img src="logo/logo1.jpg" width="200" title="holochat logo" alt="holochat logo" align="right" vspace = "30">
+<img src="logo/logo1.jpg" width="300" title="holochat logo" alt="holochat logo" align="right" vspace = "50">
 
 # HoloChat Server
 
