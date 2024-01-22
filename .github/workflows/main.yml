@@ -17,18 +17,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install pytest coverage
         python -m pip install '.[dev]'
+        
     - name: Test with pytest
-      run: |
-        pytest
-    - name: Coverage
-      if: runner.os == 'Linux'
+      run: pytest --cov
+      
+    - name: Upload coverage
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
       uses: codecov/codecov-action@v3

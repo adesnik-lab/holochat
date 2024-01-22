@@ -23,7 +23,8 @@ dev = [
     "rich",
     "httpx",
     "pytest",
-    "pyfakefs"
+    "pyfakefs",
+    "pytest-cov"
 ]
 
 [tool.pytest.ini_options]
