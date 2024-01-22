@@ -1,6 +1,11 @@
+<img src="logo/logo1.jpg" width="200" title="holochat logo" alt="holochat logo" align="right" vspace = "30">
+
 # HoloChat Server
 
-A "modern" stim message server to facilitate communication between rig computers. ![ci workflow](https://github.com/willyh101/holochat/actions/workflows/main.yml/badge.svg)
+
+A "modern" stim message server to facilitate communication between rig computers. 
+
+![ci workflow](https://github.com/willyh101/holochat/actions/workflows/main.yml/badge.svg)
 
 ## Installation
 
