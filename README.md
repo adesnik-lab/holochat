@@ -1,6 +1,6 @@
 # HoloChat Server
 
-A "modern" stim message server to facilitate communication between rig computers.
+A "modern" stim message server to facilitate communication between rig computers. ![ci workflow](https://github.com/willyh101/holochat/actions/workflows/main.yml/badge.svg)
 
 ## Installation
 

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "holochat"
-version = "0.1.1"
+version = "0.2.0"
 description = "A tools for facilitating communication between multiple computers during experiments."
 authors = [
     {name = "Will Hendricks", email = "hendricksw@gmail.com"}
@@ -16,7 +16,7 @@ dependencies = [
     "pydantic",
     "uvicorn[standard]"
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 dev = [

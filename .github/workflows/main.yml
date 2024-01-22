@@ -1,4 +1,4 @@
-name: ci-holochat
+name: ci-tests
 
 on:
   push:

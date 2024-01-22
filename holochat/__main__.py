@@ -12,7 +12,8 @@ HOST_IP = settings.server.ip
 WORKERS = settings.server.workers
 
 parser = argparse.ArgumentParser(description='holochat')
-parser.add_argument('--debug', action='store_true') # this will run on localhost despite the config file
+parser.add_argument('--debug', action='store_true', 
+                    help='this will run on localhost despite the config file. also enables reload on uvicorn.')
 args = parser.parse_args()
 
 
