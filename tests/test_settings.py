@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from holochat.settings import (MainSettings, generate_schema,
-                               generate_settings, load_settings, 
+                               generate_settings, load_settings, save_settings,
                                USER_JSON_PATH, REPO_JSON_PATH)
 
 
@@ -76,3 +76,11 @@ def test_loads_user_has_priority(fs):
     generate_settings(REPO_JSON_PATH, overwrite=False)
     settings = load_settings()
     assert settings.settings_file == USER_JSON_PATH.as_posix()
+    
+def test_save_settings_at_home():
+    save_settings(use_home=True, overwrite=False)
+    assert USER_JSON_PATH.exists()
+    
+def test_save_settings_at_repo():
+    save_settings(use_home=False, overwrite=False)
+    assert REPO_JSON_PATH.exists()

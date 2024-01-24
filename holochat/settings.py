@@ -38,6 +38,16 @@ def load_settings() -> MainSettings:
         settings = MainSettings()
     return settings
 
+def save_settings(use_home: bool = False, overwrite: bool = False):
+    """Generate a JSON config file for the main settings model."""
+    if use_home:
+        print('Generating settings file at user home...', end=' ')
+        generate_settings(USER_JSON_PATH, overwrite, with_schema=False)
+    else:
+        print('Generating schema and settings file in repo...', end=' ')
+        generate_schema(SCHEMA_PATH, overwrite)
+        generate_settings(REPO_JSON_PATH, overwrite, with_schema=True)
+    print('done.')
 
 def generate_schema(save_path: str | Path, overwrite: bool = False):
     """Generate a JSON schema for the main settings model."""
