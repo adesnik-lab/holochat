@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "holochat"
-version = "0.2.0"
+version = "0.3.1"
 description = "A tools for facilitating communication between multiple computers during experiments."
 authors = [
     {name = "Will Hendricks", email = "hendricksw@gmail.com"}
@@ -26,6 +26,9 @@ dev = [
     "pyfakefs",
     "pytest-cov"
 ]
+
+[project.scripts]
+holochat = "holochat.cli:run_holochat"
 
 [tool.pytest.ini_options]
 addopts = [

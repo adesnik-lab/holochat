@@ -38,6 +38,16 @@ def load_settings() -> MainSettings:
         settings = MainSettings()
     return settings
 
+def save_settings(use_home: bool = False, overwrite: bool = False):
+    """Generate a JSON config file for the main settings model."""
+    if use_home:
+        print('Generating settings file at user home...', end=' ')
+        generate_settings(USER_JSON_PATH, overwrite, with_schema=False)
+    else:
+        print('Generating schema and settings file in repo...', end=' ')
+        generate_schema(SCHEMA_PATH, overwrite)
+        generate_settings(REPO_JSON_PATH, overwrite, with_schema=True)
+    print('done.')
 
 def generate_schema(save_path: str | Path, overwrite: bool = False):
     """Generate a JSON schema for the main settings model."""
@@ -72,21 +82,3 @@ def _load_settings_file(config_path: str | Path) -> MainSettings:
         config = json.load(f)
     settings = MainSettings(**config)
     return settings
-
-        
-if __name__ == '__main__':
-    p = argparse.ArgumentParser()
-    p.add_argument('--home', action='store_true', help="Also save to user's home directory.")
-    p.add_argument('--ow', action='store_true', help="Overwrite existing file(s).")
-    args = p.parse_args()
-    
-    if args.home:
-        print('Generating settings file at user home...')
-        generate_settings(USER_JSON_PATH, overwrite=args.ow, with_schema=False)
-        
-    else:
-        print('Generating schema and settings file in repo...')
-        generate_schema(SCHEMA_PATH, overwrite=args.ow)
-        generate_settings(REPO_JSON_PATH, overwrite=args.ow, with_schema=True)
-    
-    print('Done.')
