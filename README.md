@@ -19,7 +19,7 @@ conda activate holochat
 pip install git+https://github.com/willyh101/holochat.git
 ```
 
-Then you can immediately run the server with `python -m holochat`.
+Then you can immediately run the server with `holochat run`.
 
 
 ### Install via venv and pip
@@ -50,10 +50,10 @@ The settings file is a json file that contains generic settings for the server.
 
 Settings can live in either the project directory or in the user's home directory. The settings file in the user's home directory will take precedence over the one in the repo directory.
 
-In order to generate the settings file, run `python -m holochat.settings`. This generates the settings file in the repo. If you want it in your home directory, use `python -m holochat.settings --home`.
+In order to generate the settings file, run `holochat setup`. This generates the settings file in the repo. If you want it in your home directory, use `holochat setup --home`. To overwrite the settings file in your home directory (or in the repo) use `--ow` flag.
 
 ### Running the server
 
-`python -m holochat`, the server will load the settings file automatically and run.
+`holochat run`, the server will load the settings file automatically and run. If this gives you trouble, try `python -m holochat`
 
-API documentation is available at `http://[your-local-ip]:8000/docs`.
+API documentation (aka GET, POST, DELETE) is available at `http://[your-local-ip]:8000/docs`.

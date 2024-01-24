@@ -77,10 +77,12 @@ def test_loads_user_has_priority(fs):
     settings = load_settings()
     assert settings.settings_file == USER_JSON_PATH.as_posix()
     
-def test_save_settings_at_home():
+def test_save_settings_at_home(fs):
+    fs.create_dir(USER_JSON_PATH.parent)
     save_settings(use_home=True, overwrite=False)
     assert USER_JSON_PATH.exists()
     
-def test_save_settings_at_repo():
+def test_save_settings_at_repo(fs):
+    fs.create_dir(REPO_JSON_PATH.parent)
     save_settings(use_home=False, overwrite=False)
     assert REPO_JSON_PATH.exists()
