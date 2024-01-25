@@ -1,3 +1,4 @@
+#type: ignore
 import time
 
 import pytest
@@ -23,7 +24,8 @@ def setup_db():
 def test_read_main():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Welcome to HoloChat!"}
+    assert response.template.name == 'index.html'
+    assert "request" in response.context
     
 def test_post_message():
     response = client.post("/msg/pc", json={"message": "Holography is fun."})

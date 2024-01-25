@@ -40,3 +40,9 @@ markers = [
     "api: marks tests as api tests",
     "settings: marks tests as settings tests"
 ]
+
+[tool.hatch.build]
+include = [
+    "templates/index.html",
+    "logo/*.jpg"
+]
