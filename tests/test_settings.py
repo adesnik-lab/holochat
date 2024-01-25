@@ -1,3 +1,4 @@
+# type: ignore 
 import json
 from pathlib import Path
 
@@ -7,6 +8,7 @@ from holochat.settings import (MainSettings, generate_schema,
                                generate_settings, load_settings, save_settings,
                                USER_JSON_PATH, REPO_JSON_PATH)
 
+pytestmark = pytest.mark.settings
 
 @pytest.fixture
 def settings_path(tmp_path: Path):
@@ -56,8 +58,8 @@ def test_generate_settings_without_schema(settings_path: Path):
 def test_nofiles_load_pydantic(fs):
     settings = load_settings()
     assert '<pydantic>' in settings.settings_file
-    
-def test_loads_from_user_home(fs):
+
+def test_loads_from_user_home(fs):  
     fs.create_dir(USER_JSON_PATH.parent)
     generate_settings(USER_JSON_PATH, overwrite=False)
     settings = load_settings()

@@ -30,9 +30,10 @@ def setup_parser():
     
     return parser
         
-def start_server(args):
+def start_server(args: argparse.Namespace):
     print('Starting server...')
     if args.debug:
+        print('Running in debug mode.')
         uvicorn.run(APP_MODULE, host="localhost", port=PORT, reload=True)
     else:
         uvicorn.run(APP_MODULE, host=HOST_IP, port=PORT, workers=WORKERS)

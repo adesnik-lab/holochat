@@ -1,20 +1,37 @@
+import importlib.metadata
 from collections import defaultdict
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 from .models import MessageContent, MessageHold, MessageRequest, MessageStore
 
 
 app = FastAPI()
+app.mount("/logo", StaticFiles(directory="logo"), name="logo")
+templates = Jinja2Templates(directory="templates")
+
 message_db: defaultdict[str, MessageStore] = defaultdict(MessageStore)
+
+
+async def verify_db_key(dest_pc: str):
+    """Verify that the target PC exists in the database."""
+    if dest_pc not in message_db:
+        raise HTTPException(status_code=404, detail="Client PC not found in message database.")
 
 
 ### --- Root --- ###
 
 @app.get("/")
-async def root():
-    return {"message": "Welcome to HoloChat!"}
+async def root(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        name="index.html", 
+        request=request, 
+        context={"version": f"v{importlib.metadata.version('holochat')}"}
+    )
 
 
 ### --- Messages --- ###
@@ -44,12 +61,9 @@ async def write_message(dest_pc: str, msg: MessageContent):
     message_db[dest_pc].messages.append(new_msg)
     return {"message": "Message received.", "target": dest_pc}
 
-@app.get("/msg/{dest_pc}", tags=["messages"])
+@app.get("/msg/{dest_pc}", tags=["messages"], dependencies=[Depends(verify_db_key)])
 async def read_message(dest_pc: str) -> MessageRequest:
     """Read a message from the database. This will return the most recent message for a client PC."""
-    
-    if dest_pc not in message_db:
-        raise HTTPException(status_code=404, detail="Client PC not found in message database.")
     
     if len(message_db[dest_pc].messages) == 0:
         raise HTTPException(status_code=404, detail="No messages found for this client PC.")
@@ -66,12 +80,9 @@ async def read_message(dest_pc: str) -> MessageRequest:
     
     return msg
 
-@app.delete("/msg/{dest_pc}", tags=["messages"])
+@app.delete("/msg/{dest_pc}", tags=["messages"], dependencies=[Depends(verify_db_key)])
 async def delete_pc_messages(dest_pc: str) -> dict[str, str]:
-    if dest_pc not in message_db:
-        raise HTTPException(status_code=404, detail="Client PC not found in message database.")
-    else:
-        message_db[dest_pc].messages = []
+    message_db[dest_pc].messages = []
     return {"message": "Messages deleted.", "target": dest_pc}
 
 @app.delete("/msg", tags=["messages"])
@@ -89,21 +100,16 @@ async def write_config(dest_pc: str, config: dict[str, Any]):
     message_db[dest_pc].config = config
     return {"message": "Config received.", "target": dest_pc}
 
-@app.get("/config/{dest_pc}", tags=["config"])
+@app.get("/config/{dest_pc}", tags=["config"], dependencies=[Depends(verify_db_key)])
 async def read_config(dest_pc: str) -> dict[str, Any]:
     """Read a config from the database for a specific client."""
-    if dest_pc not in message_db:
-        raise HTTPException(status_code=404, detail="Client PC not found in message database.")
     if not message_db[dest_pc].config:
         raise HTTPException(status_code=404, detail="No config found for this client PC.")
     return message_db[dest_pc].config
 
-@app.delete("/config/{dest_pc}", tags=["config"])
+@app.delete("/config/{dest_pc}", tags=["config"], dependencies=[Depends(verify_db_key)])
 async def delete_pc_config(dest_pc: str) -> dict[str, str]:
-    if dest_pc not in message_db:
-        raise HTTPException(status_code=404, detail="Client PC not found in message database.")
-    else:
-        message_db[dest_pc].config.clear()
+    message_db[dest_pc].config.clear()
     return {"message": "Config deleted.", "target": dest_pc}
 
 @app.get("/config", tags=["config"])
@@ -125,18 +131,14 @@ async def read_db_all() -> dict[str, MessageStore]:
     """Show the entire database."""
     return message_db
 
-@app.get("/db/{dest_pc}", tags=["database"])
+@app.get("/db/{dest_pc}", tags=["database"], dependencies=[Depends(verify_db_key)])
 async def read_pc_db(dest_pc: str) -> MessageStore:
     """Show the database for a specific client."""
-    if dest_pc not in message_db:
-        raise HTTPException(status_code=404, detail="Client PC not found in message database.")
     return message_db[dest_pc]
 
-@app.delete("/db/{dest_pc}", tags=["database"])
+@app.delete("/db/{dest_pc}", tags=["database"], dependencies=[Depends(verify_db_key)])
 async def delete_pc_db(dest_pc: str) -> dict[str, str]:
     """Show the database for a specific client."""
-    if dest_pc not in message_db:
-        raise HTTPException(status_code=404, detail="Client PC not found in message database.")
     del message_db[dest_pc]
     return {"message": "Database deleted for target client.", "target": dest_pc}
 

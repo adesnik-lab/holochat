@@ -14,7 +14,8 @@ license = {file = "LICENSE"}
 dependencies = [
     "fastapi",
     "pydantic",
-    "uvicorn[standard]"
+    "uvicorn[standard]",
+    "jinja2"
 ]
 requires-python = ">=3.11"
 
@@ -32,5 +33,10 @@ holochat = "holochat.cli:run_holochat"
 
 [tool.pytest.ini_options]
 addopts = [
-    "--import-mode=importlib",
+    "--import-mode=importlib"
+]
+markers = [
+    "slow: marks tests as slow",
+    "api: marks tests as api tests",
+    "settings: marks tests as settings tests"
 ]

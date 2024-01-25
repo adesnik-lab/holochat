@@ -1,10 +1,24 @@
 import time
+
+import pytest
 from fastapi.testclient import TestClient
 
 from holochat.main import app
+from holochat.settings import load_settings
+
+pytestmark = pytest.mark.api
 
 client = TestClient(app)
 
+settings = load_settings()
+TIME_TO_STALE = settings.message_stale_secs
+TIME_TO_EXPIRE = settings.message_expire_secs
+
+@pytest.fixture(autouse=True)
+def setup_db():
+    client.delete("/db")
+    yield
+    client.delete("/db")
 
 def test_read_main():
     response = client.get("/")
@@ -18,24 +32,33 @@ def test_post_message():
     
 def test_message_freshness():
     response = client.post("/msg/pc", json={"message": "Test freshness"})
-    time.sleep(1)
+    time.sleep(0.1)
     response = client.get("/msg/pc")
     assert response.status_code == 200
     assert response.json()["message_freshness"] == "fresh"
-    
+
+@pytest.mark.slow
 def test_message_staleness():
     response = client.post("/msg/pc", json={"message": "Test staleness"})
-    time.sleep(11)
+    time.sleep(TIME_TO_STALE)
     response = client.get("/msg/pc")
     assert response.status_code == 200
     assert response.json()["message_freshness"] == "stale"
+
+@pytest.mark.slow    
+def test_message_expiration():
+    response = client.post("/msg/pc", json={"message": "Test expiration"})
+    time.sleep(TIME_TO_EXPIRE)
+    response = client.get("/msg/pc")
+    assert response.status_code == 200
+    assert response.json()["message_freshness"] == "expired"
     
 def test_mesage_ages():
     client.post("/msg/pc", json={"message": "Test age"})
-    time.sleep(1)
+    time.sleep(0.1)
     response = client.get("/msg/pc")
     t1 = response.json()["message_age_secs"]
-    time.sleep(1)
+    time.sleep(0.1)
     response = client.get("/msg/pc")
     t2 = response.json()["message_age_secs"]
     assert t2 > t1
@@ -44,7 +67,7 @@ def test_message_read_increment():
     response = client.post("/msg/pc", json={'message': 'test increment'})
     r1 = client.get("/msg/pc")
     j1 = r1.json()
-    time.sleep(1)
+    time.sleep(0.1)
     r2 = client.get("/msg/pc")
     j2 = r2.json()
     assert response.status_code == 200
@@ -55,7 +78,7 @@ def test_message_status():
     response = client.post("/msg/pc", json={'message': 'test status'})
     r1 = client.get("/msg/pc")
     j1 = r1.json()
-    time.sleep(1)
+    time.sleep(0.1)
     r2 = client.get("/msg/pc")
     j2 = r2.json()
     assert response.status_code == 200
@@ -74,7 +97,7 @@ def test_message_overwrites():
     response = client.post("/msg/pc", json={'message': 'test overwrite'})
     r1 = client.get("/msg/pc")
     j1 = r1.json()
-    time.sleep(1)
+    time.sleep(0.1)
     response = client.post("/msg/pc", json={'message': 'test overwrite again'})
     r2 = client.get("/msg/pc")
     j2 = r2.json()
@@ -170,3 +193,12 @@ def test_known_sender():
     response = client.get("/msg/pc1")
     assert response.status_code == 200
     assert response.json()["sender"] == "holo"
+    
+def test_pc_key_exists_in_db():
+    response = client.post("/msg/pc1", json={"message": "Test pc key exists"})
+    response = client.get("/db/pc1")
+    assert response.status_code == 200
+    
+def test_missing_key_raises_404():
+    response = client.get("/db/pc1")
+    assert response.status_code == 404
