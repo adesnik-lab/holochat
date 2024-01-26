@@ -14,11 +14,11 @@ SCHEMA_PATH = Path(Path(__file__).parent.parent, SCHEMA_FNAME)
 class _ServerSettings(BaseModel):
     port: int = 8000
     ip: str = '0.0.0.0'
-    workers: int = 2
+    workers: int = 1
     
 class MainSettings(BaseModel):
     message_stale_secs: int | float = 10
-    message_expire_secs: int | float = 60
+    message_expire_secs: int | float = 30
     server: _ServerSettings = _ServerSettings()    
     settings_file: str = '<pydantic>'
 
@@ -46,7 +46,6 @@ def save_settings(use_home: bool = False, overwrite: bool = False):
         print('Generating schema and settings file in repo...', end=' ')
         generate_schema(SCHEMA_PATH, overwrite)
         generate_settings(REPO_JSON_PATH, overwrite, with_schema=True)
-    print('done.')
 
 def generate_schema(save_path: str | Path, overwrite: bool = False):
     """Generate a JSON schema for the main settings model."""

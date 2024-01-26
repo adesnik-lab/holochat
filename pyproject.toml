@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "holochat"
-version = "0.3.1"
+version = "0.3.2"
 description = "A tools for facilitating communication between multiple computers during experiments."
 authors = [
     {name = "Will Hendricks", email = "hendricksw@gmail.com"}
@@ -41,8 +41,9 @@ markers = [
     "settings: marks tests as settings tests"
 ]
 
-[tool.hatch.build]
+[tool.hatch.build.targets.wheel]
 include = [
+    "holochat/*",
     "templates/index.html",
     "logo/*.jpg"
 ]

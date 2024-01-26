@@ -1,9 +1,10 @@
 import importlib.metadata
 from collections import defaultdict
 from typing import Any
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -11,8 +12,12 @@ from .models import MessageContent, MessageHold, MessageRequest, MessageStore
 
 
 app = FastAPI()
-app.mount("/logo", StaticFiles(directory="logo"), name="logo")
-templates = Jinja2Templates(directory="templates")
+
+logo_path = Path(__file__).parent.parent / "logo"
+app.mount("/logo", StaticFiles(directory=logo_path), name="logo")
+
+templates_path = Path(__file__).parent.parent / "templates"
+templates = Jinja2Templates(directory=templates_path)
 
 message_db: defaultdict[str, MessageStore] = defaultdict(MessageStore)
 
@@ -33,6 +38,12 @@ async def root(request: Request) -> HTMLResponse:
         context={"version": f"v{importlib.metadata.version('holochat')}"}
     )
 
+@app.get("/save/{dest_pc}")
+async def save_db(dest_pc: str):
+    out = message_db[dest_pc].model_dump_json(indent=2)
+    fname = f"{dest_pc}_holochat_db.json"
+    return StreamingResponse(out, media_type="application/json", 
+                             headers={"Content-Disposition": "attachment; filename="+fname})
 
 ### --- Messages --- ###
 

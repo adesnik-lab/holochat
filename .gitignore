@@ -1,5 +1,6 @@
 # Custom for this repo
-
+holochat_settings.json
+holochat_settings_schema.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,python,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,python,windows
