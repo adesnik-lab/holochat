@@ -62,11 +62,12 @@ def start_server(args: argparse.Namespace):
         uvicorn.run(APP_MODULE, host=HOST_IP, port=PORT, workers=WORKERS)
 
 def get_public_ip():
+    print(f'The public IP address of this computer is:')
     try:
         public_ip = httpx.get('https://api.ipify.org', timeout=3).text
-        print(f'The public IP address of this computer is:')
         print('  ->', bold_str(public_ip))
-    except httpx.TimeoutException:
+    except httpx.HTTPError as e:
+        print('  ->', e)
         print('WARNING: Could not get public IP address??')
 
 def get_other_ips():
