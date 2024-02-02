@@ -6,7 +6,7 @@
 A "modern" stim message server to facilitate communication between rig computers. 
 
 ![ci workflow](https://github.com/willyh101/holochat/actions/workflows/main.yml/badge.svg)
-[![codecov](https://codecov.io/gh/willyh101/holochat/graph/badge.svg?token=VB8RWD9Z31)](https://codecov.io/gh/willyh101/holochat)
+[![codecov](https://codecov.io/gh/adesnik-lab/holochat/graph/badge.svg?token=9FEMYDPAMV)](https://codecov.io/gh/adesnik-lab/holochat)
 ## Installation
 
 ### Easy mode install
