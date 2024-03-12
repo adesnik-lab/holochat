@@ -4,9 +4,12 @@ import socket
 
 import httpx
 import uvicorn
+from colorama import just_fix_windows_console
 
 from holochat.settings import load_settings, save_settings
 
+
+just_fix_windows_console()
 
 settings = load_settings()
 
@@ -55,11 +58,11 @@ def setup_parser():
    
 def start_server(args: argparse.Namespace):
     print_server_startup()
-    if args.debug:
+    if 'debug' not in args:
+        uvicorn.run(APP_MODULE, host=HOST_IP, port=PORT, workers=WORKERS)
+    else:
         print('Running in debug mode.')
         uvicorn.run(APP_MODULE, host="localhost", port=PORT, reload=True)
-    else:
-        uvicorn.run(APP_MODULE, host=HOST_IP, port=PORT, workers=WORKERS)
 
 def get_public_ip():
     print(f'The public IP address of this computer is:')
@@ -73,10 +76,10 @@ def get_public_ip():
 def get_other_ips():
     hostname = socket.gethostname()
     ip_list = socket.gethostbyname_ex(hostname)[-1]
-    localhost = '127.0.1.1'
+    localhost = '127.0.0.1'
     if localhost in ip_list:
         ip_list.remove(localhost)
-    if len(ip_list) > 1:
+    if len(ip_list) >= 1:
         print('*** note: You have multiple IPs available:')
         for ip in ip_list:
             print('  ->',bold_str(ip))

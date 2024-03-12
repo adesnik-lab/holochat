@@ -16,7 +16,8 @@ dependencies = [
     "pydantic",
     "uvicorn[standard]",
     "jinja2",
-    "httpx"
+    "httpx",
+    "colorama",
 ]
 requires-python = ">=3.11"
 
