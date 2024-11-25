@@ -58,11 +58,11 @@ def setup_parser():
    
 def start_server(args: argparse.Namespace):
     print_server_startup()
-    if 'debug' not in args:
-        uvicorn.run(APP_MODULE, host=HOST_IP, port=PORT, workers=WORKERS)
-    else:
-        print('Running in debug mode.')
-        uvicorn.run(APP_MODULE, host="localhost", port=PORT, reload=True)
+#    if 'debug' not in args:
+    uvicorn.run(APP_MODULE, host=HOST_IP, port=PORT, workers=WORKERS)
+#    else:
+#        print('Running in debug mode.')
+#        uvicorn.run(APP_MODULE, host="localhost", port=PORT, reload=True)
 
 def get_public_ip():
     print(f'The public IP address of this computer is:')
